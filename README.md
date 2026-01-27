@@ -1,11 +1,18 @@
 # 微信跳一跳自动化项目 🎮
 
 <div align='center'>
+
+![AMD](https://img.shields.io/badge/AMD-ROCm-ED1C24?style=for-the-badge&logo=amd&logoColor=white)
+
+</div>
+
+
+<div align='center'>
     <img src="./images/results_1750811815.365171.png" alt="alt text" width="35%">
     <img src="./images/win.jpg" alt="alt text" width="35%">
 </div>
 
-基于YOLO目标检测的微信跳一跳游戏自动化工具，通过计算机视觉识别游戏中的小人和目标平台，自动计算距离并控制手机进行精准跳跃。
+基于YOLO目标检测的微信跳一跳游戏自动化工具，通过计算机视觉识别游戏中的小人和目标平台，自动计算距离并控制手机进行精准跳跃。本项目已支持 AMD ROCm 平台训练和推理，支持 Ryzen AI 系列芯片。
 
 ## 🌟 项目特色
 
@@ -42,11 +49,40 @@ cd wechat-jump
 ```
 
 ### 2. 安装Python依赖
+
+- NVIDIA CUDA
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. 安装ADB工具（macOS）
+- AMD ROCm 7.2.0
+
+   - 以 Ryzen AI 系列为例 参考 [支持列表](https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/compatibility/compatibilityryz/windows/windows_compatibility.html)
+
+```shell
+# 安装ROCm相关依赖 包含 torch torchvision torchaudio等核心库
+python -m pip install --no-cache-dir "https://repo.radeon.com/rocm/windows/.rocm-rel-7.2_a/rocm_sdk_core-7.2.0.dev0-py3-none-win_amd64.whl"
+python -m pip install --no-cache-dir "https://repo.radeon.com/rocm/windows/.rocm-rel-7.2_a/rocm_sdk_devel-7.2.0.dev0-py3-none-win_amd64.whl"
+python -m pip install --no-cache-dir "https://repo.radeon.com/rocm/windows/.rocm-rel-7.2_a/rocm_sdk_libraries_custom-7.2.0.dev0-py3-none-win_amd64.whl"
+python -m pip install --no-cache-dir "https://repo.radeon.com/rocm/windows/.rocm-rel-7.2_a/rocm-7.2.0.dev0.tar.gz"
+python -m pip install --no-cache-dir "https://repo.radeon.com/rocm/windows/.rocm-rel-7.2_a/torch-2.9.1+rocmsdk20260116-cp312-cp312-win_amd64.whl"
+python -m pip install --no-cache-dir "https://repo.radeon.com/rocm/windows/.rocm-rel-7.2_a/torchvision-0.24.1+rocmsdk20260116-cp312-cp312-win_amd64.whl"
+python -m pip install --no-cache-dir "https://repo.radeon.com/rocm/windows/.rocm-rel-7.2_a/torchaudio-2.9.0+rocmsdk20251116-cp312-cp312-win_amd64.whl"
+```
+
+- 安装其他依赖
+
+```shell
+pip install -r requirements_rocm_windows.txt
+```
+
+
+
+### 3. 安装ADB工具
+
+- macOS
+
 ```bash
 # 使用提供的安装脚本
 chmod +x install_adb_mac.sh
@@ -55,6 +91,16 @@ chmod +x install_adb_mac.sh
 # 或手动安装
 brew install android-platform-tools
 ```
+
+- Windows
+
+   - 官方下载：https://developer.android.google.cn/tools/releases/platform-tools?authuser=4&hl=zh-cn
+
+   - 下载并解压后，设置解压路径至系统环境变量中
+
+   <div align='center'>
+    <img src="./images/env.png" alt="alt text" width="90%">
+   </div>
 
 ### 4. 手机设置
 1. 开启开发者选项
