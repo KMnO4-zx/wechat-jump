@@ -5,19 +5,43 @@ import time
 import os
 import numpy as np
 import datetime
+import matplotlib.pyplot as plt
+
+# 配置 matplotlib 支持中文显示
+plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'DejaVu Sans']  # 用来正常显示中文标签
+plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 
 class Jump:
     def __init__(self, model_path: str) -> None:
         self.model = YOLO(model_path)
         self.save_floder = f"./dataset/predict_{int(time.time())}"
+        # 开启 matplotlib 交互模式，用于实时显示图像
+        plt.ion()
+        self.fig = None
+        self.ax = None
 
     def predict(self, image: str):
-        results = self.model.predict(image, conf=0.2, iou=0.9, verbose=False)
+        results = self.model.predict(image, conf=0.2, iou=0.9, verbose=False,device="cuda")
         # 保存预测结果
         os.makedirs(self.save_floder, exist_ok=True)
         save_name = f"{self.save_floder}/results_{time.time()}.png"
         results[0].save(filename=save_name)
+        
+        # 实时显示保存的图像
+        plotted_img = results[0].plot()  # 获取绘制了检测框的图像
+        if self.fig is None:
+            # 首次创建图像窗口
+            self.fig, self.ax = plt.subplots(figsize=(10, 8))
+            self.ax.axis('off')
+            self.ax.set_title('实时检测结果', fontsize=14)
+        
+        # 更新图像显示
+        self.ax.clear()
+        self.ax.imshow(plotted_img)
+        self.ax.axis('off')
+        self.ax.set_title(f'实时检测结果 - {os.path.basename(save_name)}', fontsize=14)
+        plt.pause(0.01)  # 短暂暂停以更新显示
 
         # 获取检测框和类别
         boxes = results[0].boxes.xywh.cpu().numpy()  # 转换为numpy数组
@@ -75,8 +99,8 @@ class Jump:
     
 
 if __name__ == "__main__":
-    jump = Jump("./best.pt")
+    jump = Jump("./runs/detect/train/weights/best.pt")
     # jump.adb_screenshot()
     # print(jump.predict("./iphone.png"))
     while True:
-        jump.jump(k=1.18)
+        jump.jump(k=1.3)
