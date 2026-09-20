@@ -5,10 +5,14 @@ import time
 import os
 import numpy as np
 import datetime
+import torch
 import matplotlib.pyplot as plt
 
+# Mac 上使用 MPS (Apple Silicon GPU) 加速，不可用时回退到 CPU
+DEVICE = "mps" if torch.backends.mps.is_available() else "cpu"
+
 # 配置 matplotlib 支持中文显示
-plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'DejaVu Sans']  # 用来正常显示中文标签
+plt.rcParams['font.sans-serif'] = ['Hiragino Sans GB', 'PingFang HK', 'Arial Unicode MS', 'SimHei', 'Microsoft YaHei', 'DejaVu Sans']  # 用来正常显示中文标签
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
 
@@ -22,7 +26,7 @@ class Jump:
         self.ax = None
 
     def predict(self, image: str):
-        results = self.model.predict(image, conf=0.2, iou=0.9, verbose=False,device="cuda")
+        results = self.model.predict(image, conf=0.2, iou=0.9, verbose=False, device=DEVICE)
         # 保存预测结果
         os.makedirs(self.save_floder, exist_ok=True)
         save_name = f"{self.save_floder}/results_{time.time()}.png"
@@ -99,8 +103,8 @@ class Jump:
     
 
 if __name__ == "__main__":
-    jump = Jump("./runs/detect/train/weights/best.pt")
+    jump = Jump("./best.pt")
     # jump.adb_screenshot()
     # print(jump.predict("./iphone.png"))
     while True:
-        jump.jump(k=1.3)
+        jump.jump(k=1.2)
