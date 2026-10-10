@@ -98,7 +98,7 @@ class Jump:
         y = random.randint(1000, 1200)
         self.adb_tap(x, y, duration_ms = press_time)
         # 等待1秒
-        time.sleep(2)
+        time.sleep(2.5)
 
     
 
